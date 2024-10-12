@@ -1,0 +1,28 @@
+name: Build Atmosphere19
+
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/d3fau4/nx-dev
+    steps:
+    - uses: actions/checkout@v4
+      with:
+          submodules: true
+          fetch-depth: 0
+
+    - name: Configure Git Safe Directory
+      run: git config --global --add safe.directory /__w/Atmosphere/Atmosphere
+
+    - name: Build app
+      run: |
+        make all
+        
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build
+        path: |
+          out/*/release/*.zip
+          out/*/release/*.bin
